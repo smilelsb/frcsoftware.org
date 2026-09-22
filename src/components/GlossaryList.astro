@@ -4,12 +4,41 @@
  *
  * Usage:
  * <GlossaryList />
+ * <GlossaryList locale="zh" />
  */
 
 import { getCollection } from 'astro:content';
+import { parse } from 'yaml';
+import zhGlossary from '../data/zh/glossary.yaml?raw';
 
-const terms = (await getCollection('glossary')).sort((a, b) =>
-    a.id.toLowerCase().localeCompare(b.id.toLowerCase()),
+interface Props {
+    locale?: 'en' | 'zh';
+}
+
+interface GlossaryEntry {
+    id: string;
+    data: {
+        definition: string;
+        caseSensitive?: boolean | undefined;
+    };
+}
+
+const { locale = 'en' } = Astro.props;
+
+const terms: GlossaryEntry[] =
+    locale === 'zh'
+        ? Object.entries(
+              parse(zhGlossary) as Record<string, GlossaryEntry['data']>,
+          ).map(([id, data]) => ({ id, data }))
+        : await getCollection('glossary');
+
+terms.sort((a, b) =>
+    a.id
+        .toLowerCase()
+        .localeCompare(
+            b.id.toLowerCase(),
+            locale === 'zh' ? 'zh-CN' : undefined,
+        ),
 );
 ---
 

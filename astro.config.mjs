@@ -83,10 +83,25 @@ export default defineConfig({
             plugins: [
                 // Separates sidebar into topics that are switchable with a dropdown
                 starlightSidebarTopics(sidebarTopics, {
-                    exclude: ['/', '/test-content-figure'],
+                    exclude: [
+                        '/',
+                        '/test-content-figure',
+                        '/zh/test-content-figure',
+                    ],
                 }),
                 starlightLinksValidator(),
             ],
+            defaultLocale: 'root',
+            locales: {
+                root: {
+                    label: 'English',
+                    lang: 'en',
+                },
+                zh: {
+                    label: '简体中文',
+                    lang: 'zh-CN',
+                },
+            },
         }),
     ],
 });
