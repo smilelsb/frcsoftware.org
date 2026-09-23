@@ -1,0 +1,151 @@
+---
+title: Conditionals（条件语句）
+description: 条件语句入门
+codeRegionSources:
+    default: stage0/snippets/src/Conditionals.java
+---
+
+在日常生活中，我们会根据不同情况做出决定。
+例如，“如果饿了，就去吃点零食”，或者“如果累了，就去睡觉”。
+机器人也经常需要根据情况做出不同决定。
+例如，“如果计时开始，就让机器人行驶 5 秒”，或者“如果计时为 0，就停止行驶”。
+要在代码中加入判断，就要使用条件语句。
+
+本节介绍三种条件语句：
+
+- if
+- else
+- else if
+
+<Aside type="note" title="Note（备注）">
+    另一种条件语句称为 switch 语句。由于它在 FRC 中很少使用，这里不会介绍。
+    如果想进一步了解 switch 语句，可以查看 [w3schools
+    上介绍这种条件语句的页面](https://www.w3schools.com/java/java_switch.asp)。
+</Aside>
+
+## if
+
+`if` 语句只在指定条件为 true 时运行代码。
+`if` 语句的语法如下：
+
+```java #ifSyntax
+
+```
+
+来拆解一下它的含义：
+
+- `if` 是一个关键字
+- `( )` 中是条件，结果要么是 true，要么是 false。
+  例如，(6 > 2) 是一个条件，而且为 true，因为 6 大于 2
+- `{` 左花括号表示条件语句的开始
+- `}` 右花括号表示条件语句的结束
+
+左右花括号之间的代码称为代码块。
+
+<Aside type="tip" title="Tip（提示）">
+    所有条件语句的语法都非常相似。
+    它们都以关键字开头，大多数后面跟着圆括号，并且都有左花括号和右花括号。
+</Aside>
+
+`if` 语句根据圆括号中的 `condition` 做出判断。
+如果 `condition` 为 true，`if` 代码块中的代码就会运行。
+如果 `condition` 为 false，`if` 代码块中的代码就会被跳过。
+
+现在来看一个示例。
+在这个示例中，只有当 distance 小于 10 时，代码才会让 drivetrain（底盘驱动系统）向前移动。
+
+```java #ifExample
+
+```
+
+条件是 `distance < 10`。
+我们知道 `distance` 等于 6，因此可以把这个条件理解为 6 < 10。6 小于 10，所以条件为 true。
+这意味着 `if` 代码块中的代码会运行：它会输出 “Motors are spinning”，并使电机全速转动。
+
+## else
+
+做判断时，有时并不需要非常精确的逻辑。
+有时你不想，或者无法，确定其他所有可能为 true 的情况，这时用一条“兜底”语句涵盖其余情况会更好。
+例如：机器人一直行驶，直到 distance 达到 10，然后停止。
+这就是可以使用 `else` 语句的一个例子。
+
+else 语句的语法如下：
+
+```java #ifElseSyntax
+
+```
+
+`else` 语句没有圆括号，因为它不需要条件来决定是否运行。
+它的工作方式是：如果 `if` 语句的条件为 `true`，其中的代码就会运行。
+如果 `if` 语句的条件为 `false`，就会跳过 `if` 代码块，并运行 `else` 代码块中的代码。
+
+在这个示例中，新增的 `else` 语句会在 `distance` 不小于 10 时把电机速度设为 0。
+我们的 `distance` 被设为 21，这段代码会输出什么？
+
+```java #elseExample
+
+```
+
+我们先检查第一个条件 `distance < 10`。
+21 并不小于 10，所以跳过这个条件，转到 `else`。
+`else` 会运行，输出 “Motors are not spinning”，并把电机速度设为 0。
+
+## else if
+
+`if` 和 `else` 可以在两个选项之间选择，但如果想在更多选项之间选择呢？
+`else if` 语句可以让你检查任意多个条件。
+
+`else if` 语句的语法如下：
+
+```java #elseIfSyntax
+
+```
+
+它的语法与 `if` 语句相似，只是末尾增加了 `else if`。
+来拆解一下这个新增部分。
+`else if` 是一个关键字，可以在 if 语句为 false 时让条件语句执行另一项任务。
+
+如果 `conditionA` 为 true，`if` 代码块中的代码就会运行。
+如果 `conditionA` 为 false，就会转到 `else if` 语句。
+如果 `conditionB` 为 true，`else if` 代码块中的代码就会运行。
+如果 `conditionB` 为 false，就会退出这条语句，其中的代码都不会运行。
+
+在示例中，新增的 `else if` 语句会在与物体的距离小于 10cm 时把电机设为一半速度。
+现在的 `distance` 是 15cm。
+加上这个新语句后，代码会输出什么？
+
+```java #elseIfExample
+
+```
+
+`distance` 是 15cm。
+第一个条件是 `distance < 10`。
+15 并不小于 10，所以这个条件为 false。
+因此转到条件语句的下一部分，也就是 `else if`。
+`else if` 的条件是 `distance > 10`。
+15 大于 10，所以这个 `else if` 代码块中的代码会运行。
+这意味着电机会被设为全速行驶，并向终端输出 “Motors are at full speed”。
+
+## 综合运用
+
+前面的代码会在距离大于 10cm 时让机器人全速行驶，在距离小于 10cm 时让机器人半速行驶，但到达目标距离时并不会停止。
+你可以再添加一个 else if，也可以把前面学过的内容组合起来，再添加一个 else 条件。
+
+```java #conditionalExample
+
+```
+
+我们先检查第一个条件 `distance < 10`。
+21 并不小于 10，所以跳过这个条件，转到 `else if`。
+这个条件是 `distance <= 20`。我们知道 21 并不小于或等于 20，所以也跳过这个条件。
+由于这两个条件都为 false，`else` 就会运行，输出 “Motors are not spinning”，并把电机速度设为 0。
+
+## 条件语句练习
+
+<Aside type="exercise" title="Exercise（练习）">
+    ### 练习
+
+    现在可以直接打开 `Conditionals.java`！
+    按照注释编写相应代码，以完成目标。
+
+</Aside>

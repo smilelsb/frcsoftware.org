@@ -1,0 +1,167 @@
+---
+title: Arrays and For-Each Loops（数组与 for-each 循环）
+description: 介绍 Java 中的数组和 for-each 循环
+codeRegionSources:
+    default: stage0/snippets/src/Arrays.java
+---
+
+在[上一课](/learning-course/stage0/classes-methods/)中，我们定义了 `Point` 类来表示场地上的一个位置。
+本课学习 <strong>arrays（数组）</strong>。数组可以把多个相同类型的值存放在一起。
+还会学习 <strong>for-each loop（for-each 循环）</strong>。它用来遍历这些值，通常比你已经学过的 `for` 循环更清晰。
+
+## 为什么使用数组？
+
+假设 drivetrain（底盘驱动系统）有四台电机，你想记录为每台电机设定的速度。
+如果没有数组，就需要为每台电机单独创建一个变量：
+
+{/* rli:ignore */}
+
+```java
+double motor1Speed = 0.5;
+double motor2Speed = 0.5;
+double motor3Speed = 0.5;
+double motor4Speed = 0.5;
+```
+
+四台电机时这样可以，但它无法扩展。
+如果机器人有八台电机，就需要八个变量，而且任何要对“所有电机速度”进行操作的代码都必须为每个变量重复一次。
+数组把多个相同类型的值存放在一起，作为一个变量来解决这个问题。
+
+## 声明和创建数组
+
+数组类型的写法是元素类型后面加上方括号，例如 `double[]` 表示 `double` 数组。
+创建数组最简单的方式是使用 array literal（数组字面量），也就是放在花括号中、用逗号分隔的一组值：
+
+```java #motorSpeedsLiteral
+
+```
+
+这会创建一个包含四个 `double` 的数组，并把它保存在变量 `motorSpeeds` 中。
+数组一旦创建，大小就固定了，所以只要 `motorSpeeds` 存在，它就始终正好保存四个值。
+不过，数组中的值可以随时更改。
+
+<Aside type="tip" title="创建空数组">
+    如果还不知道具体的值，可以用 `new` 关键字按给定大小创建数组，而不使用字面量：
+
+    ```java #motorSpeedsEmpty
+
+    ```
+
+    这会创建一个包含四个 `double` 的数组，初始值都是 `0.0`。
+    可以把数组字面量理解为用这种方式创建数组，然后再填入每个值的简写。
+
+</Aside>
+
+## 索引与长度
+
+数组中的每个值称为 <strong>element（元素）</strong>。访问特定元素时使用它的 <strong>index（索引）</strong>，也就是该元素在数组中的位置。
+和 `String` 以及 `List`（下一课会介绍）一样，Java 中的数组索引从 `0` 开始，而不是从 `1` 开始。
+因此，在 `motorSpeeds` 中，第一台电机的速度位于索引 `0`，最后一台位于索引 `3`。
+
+在数组变量名后面使用方括号来读取和写入元素。
+来更新第一台电机的速度，并把它打印出来：
+
+```java #setSpeed
+
+```
+
+数组还有 `length`，表示它包含的元素数量。
+与作为方法的 `String.length()` 不同，数组的 `length` 是一个 <strong>field（字段）</strong>，所以访问时不加圆括号：
+
+```java #speedsLength
+
+```
+
+<Aside type="caution" title="数组边界">
+    每个索引都必须介于 `0` 和 `length - 1` 之间。 访问
+    `motorSpeeds[4]`，或任何超出这个范围的索引，都会抛出异常。
+    这会阻止程序继续运行。
+</Aside>
+
+## 对象数组
+
+数组的元素类型不限于 `double` 这样的基本类型，它可以是任何类型，包括你自己定义的类，例如 `Point`。
+把一条固定的自动路径定义成 waypoints（路径点）数组，顺序就是机器人应当依次经过它们的顺序：
+
+```java #pathArray
+
+```
+
+和 `motorSpeeds` 一样，`path` 的大小是固定的。这里是三个，因为创建时放入了三个路径点。
+这很适合自动路径：路线事先已经规划好，所以我们确切知道它有多少个路径点。
+
+<Aside type="tip" title="对象的空数组">
+    和基本类型数组一样，可以用 `new` 而不是字面量创建对象的空数组：
+
+    ```java #pathArrayEmpty
+
+    ```
+
+    这会创建一个包含三个 `Point` 的数组，初始值都是 `null`。
+    `null` 是一个特殊对象，表示没有值。
+    如果你知道需要多少个元素，但还没有它们的值，创建空数组会很有用。
+    例如，需要等到知道机器人的联盟颜色之后，再填充这个数组。
+
+    不过，因为 `null` 实际上不是一个 `Point`，所以不能访问任何字段或方法。
+    如果尝试访问，就会抛出名为 `NullPointerException` 的异常：
+
+    ```java #pathArrayNull
+
+    ```
+
+    因此，通常最好使用字面量创建对象数组。
+
+</Aside>
+
+## 遍历数组
+
+数组的用处在于可以遍历其中的元素，而不必逐个手写。
+你已经见过基于索引的 `for` 循环。用它把 `motorSpeeds` 中的每个电机速度加起来：
+
+```java #indexLoopSpeeds
+
+```
+
+这个循环的条件 `i < motorSpeeds.length` 使它适用于任何大小的数组：
+无论 `motorSpeeds` 有四个元素还是四十个元素，它都会在最后一个有效索引之后停止。
+
+## for-each 循环
+
+通常，这种循环只需要“对每个元素做某件事”，完全不关心索引。
+Java 的 for-each 循环可以轻松做到这一点，不需要管理索引变量：
+
+{/* rli:ignore */}
+
+```java
+for (ElementType element : array) {
+    // code that uses element
+}
+```
+
+冒号左边整体是「类型 + 局部变量名」。类型必须与数组的元素类型一致；类型后面的名称是一个新的局部变量，每次循环保存一个元素。冒号右边是待遍历的数组或集合。
+用 for-each 循环打印 `path` 中的每个路径点：
+
+```java #forEachPath
+
+```
+
+这比等效的基于索引的循环更容易阅读，因为不需要跟踪 `path[i]`。
+`waypoint` 会按顺序依次变成 `path` 中的每个 `Point`，每个元素对应一次循环。
+
+有时无法避免使用基于索引的循环，因为需要的不只是“当前元素”。
+例如，要计算路径的总距离，需要每个路径点以及它前面的那个路径点，for-each 循环无法表达这一点：
+
+```java #pathLength
+
+```
+
+这里，`path[i - 1]` 是前一个路径点，`path[i]` 是当前路径点。`i` 从 `1` 开始，因为索引 `0` 没有前一个路径点可以比较。
+for-each 循环无法访问前一个元素，所以这里应该使用基于索引的 `for` 循环。
+
+## 数组与 for-each 循环练习
+
+<Aside type="exercise" title="Exercise（练习）">
+
+现在可以直接打开 `array.java!`。按照注释编写相应代码，以完成目标。
+
+</Aside>
