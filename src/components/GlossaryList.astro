@@ -4,49 +4,31 @@
  *
  * Usage:
  * <GlossaryList />
- * <GlossaryList locale="zh" />
  */
 
 import { getCollection } from 'astro:content';
-import { parse } from 'yaml';
-import zhGlossary from '../data/zh/glossary.yaml?raw';
+import { defaultLang } from '../config/locales';
 
 interface Props {
-    locale?: 'en' | 'zh';
+    lang?: string;
 }
 
-interface GlossaryEntry {
-    id: string;
-    data: {
-        definition: string;
-        caseSensitive?: boolean | undefined;
-    };
-}
+const { lang = defaultLang } = Astro.props;
 
-const { locale = 'en' } = Astro.props;
-
-const terms: GlossaryEntry[] =
-    locale === 'zh'
-        ? Object.entries(
-              parse(zhGlossary) as Record<string, GlossaryEntry['data']>,
-          ).map(([id, data]) => ({ id, data }))
-        : await getCollection('glossary');
-
-terms.sort((a, b) =>
-    a.id
-        .toLowerCase()
-        .localeCompare(
-            b.id.toLowerCase(),
-            locale === 'zh' ? 'zh-CN' : undefined,
-        ),
-);
+const terms = (await getCollection('glossary'))
+    .filter(({ data }) => data.lang === lang)
+    .sort((a, b) =>
+        a.data.term.toLowerCase().localeCompare(b.data.term.toLowerCase()),
+    );
 ---
 
 <dl class="glossary-list">
     {
-        terms.map(({ id, data }) => (
+        terms.map(({ data }) => (
             <div class="glossary-entry">
-                <dt id={id.toLowerCase().replace(/\s+/g, '-')}>{id}</dt>
+                <dt id={data.term.toLowerCase().replace(/\s+/g, '-')}>
+                    {data.term}
+                </dt>
                 <dd>{data.definition}</dd>
             </div>
         ))
