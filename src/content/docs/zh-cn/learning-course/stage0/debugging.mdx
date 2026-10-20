@@ -1,26 +1,24 @@
 ---
 title: Debugging（调试）
-description: 调试入门
+description: 介绍语法错误、运行时错误和逻辑错误，以及如何找到并修复它们
 codeRegionSources:
     default: stage0/snippets/src/Debugging.java
 ---
 
-完成 Java基础的练习时，你可能遇到过错误，然后把它们修好。
-这说明你已经做过一些调试！
-调试就是找出错误并加以修复的过程，这些错误常被称为 bugs（程序缺陷）。
-本节将介绍调试机器人代码的有效方法。
+在[上一课](/learning-course/stage0/java-fundamentals/)中，你写出了第一段 Java 代码，过程中可能也遇到了一些错误。
+如果第一次就全部成功，那要么是你非常幸运，要么是还没有充分测试。
+找出并修复这些错误称为 <strong>debugging（调试）</strong>，以后你会经常做这件事。
+这一课介绍你会遇到的三种错误，以及如何分别追查它们。
 
-<Aside type="note" title="你知道吗？">
+<Aside type="note" title="Did you know?（你知道吗？）">
     用 “bug” 表示程序中的错误，这一用法因美国计算机科学家 Grace Hopper 而广为人知。
     她和团队在研制 Mark II 计算机时，把一个错误追溯到一只卡在计算机里的飞蛾。
-    他们把这只飞蛾夹进笔记本，并写下 “First actual case of bug being found”。
-
+    他们把这只飞蛾夹进笔记本，并写下 “First actual case of bug being found.”（发现 bug 的第一个真实案例）。
 </Aside>
 
-# 错误类型
+## 错误类型
 
-编写代码时可能遇到几种不同的错误。
-来看一看！
+错误主要有三种，每种出现的时间时间不同：
 
 <table>
     <thead>
@@ -32,41 +30,32 @@ codeRegionSources:
     </thead>
     <tbody>
         <tr>
-            <td>Syntax Error（语法错误）</td>
+            <td>Syntax error（语法错误）</td>
             <td>编译时</td>
             <td>编译器会显示错误信息，代码也无法完成构建</td>
         </tr>
         <tr>
-            <td>Runtime Error（运行时错误）</td>
+            <td>Runtime error（运行时错误）</td>
             <td>运行时</td>
-            <td>程序会崩溃并重新启动，同时显示错误信息</td>
+            <td>程序会崩溃并显示错误信息。在机器人上，代码随后会重新启动</td>
         </tr>
         <tr>
-            <td>Logic Error（逻辑错误）</td>
+            <td>Logic error（逻辑错误）</td>
             <td>运行时</td>
-            <td>代码能够运行，但不会按预期工作</td>
+            <td>代码能够运行，但不会按你的意图工作</td>
         </tr>
     </tbody>
 </table>
 
-## Syntax Error（语法错误）
+## Syntax Errors（语法错误）
 
-在构建过程中，有一个称为编译器的程序会把你编写的全部代码转换成机器能够理解的指令。
+代码运行之前，一个称为 <strong>compiler（编译器）</strong>的程序会把它翻译成计算机能够理解的指令。
+就像英语有语法规则一样，Java 也有 <strong>syntax（语法）</strong>规则，用来确保编译器能理解你写的代码。
+如果代码违反了其中一条规则，编译器不会构建代码，而是给出一个 <strong>syntax error（语法错误）</strong>。
+这发生在编译器翻译代码的时候，代码实际上还没有运行，所以我们说它发生在 <strong>compile time（编译时）</strong>。
 
-就像英语有语法规则一样，Java 也有一套语法，以确保编译器能够理解你编写的代码。
-如果不遵守这套语法，编译器就会报错。
-VS Code 会在它认为有问题的代码下方显示红线，就像 Google Docs 标出拼写错误一样。
-
-这种错误称为**语法错误**，因为它出现在语言语法写错的时候。
-我们说它发生在编译时，因为它出现在编译器翻译代码的过程中，代码实际上还没有运行。
-
-<Aside type="note" title="Note（备注）">
-    编程时，某段代码下方可能会出现黄线。
-    大多数情况下，这不是错误，而是警告，通常不会影响代码的输出。
-    不过，仍应仔细留意它，因为它可能导致不希望出现的输出。
-</Aside>
-
-例如，下面的代码会产生语法错误：
+VS Code 会在它认为写错的代码下方显示红线，就像 Google Docs 标出拼写错误一样。
+例如，把 `System` 拼错就是语法错误：
 
 <ContentFigure
     src="/learning-course/stage0/debugging/syntaxError1.webp"
@@ -75,8 +64,7 @@ VS Code 会在它认为有问题的代码下方显示红线，就像 Google Docs
     height="800px"
 />
 
-变量名拼写错误也是语法错误。
-如下所示，没有使用正确的语法同样会产生语法错误。
+漏掉语句的一部分也是语法错误，例如变量声明里缺少等号：
 
 <ContentFigure
     src="/learning-course/stage0/debugging/syntaxError2.webp"
@@ -85,10 +73,10 @@ VS Code 会在它认为有问题的代码下方显示红线，就像 Google Docs
     height="800px"
 />
 
-如果发现代码下方有红线，把鼠标悬停在那一行代码上。
-VS Code 会提供关于该错误的更多信息。
-回到前面变量名拼写错误的示例，把光标放在错误上时，会显示 `numer cannot be resolved to a variable`。
-这意味着它正在寻找名为 `numer` 的变量，但找不到。
+把鼠标悬停在红线上，VS Code 会告诉你更多关于这个错误的信息。
+例如，如果变量名拼错了，悬停时会显示 `numer cannot be resolved to a variable`。
+这表示编译器正在寻找名为 `numer` 的变量，但找不到。
+严格来说，这不是语法错误，因为代码符合 Java 的语法规则，但编译器仍会在编译时发现它，并用同样的方式显示出来。
 
 <ContentFigure
     src="/learning-course/stage0/debugging/syntaxError3.webp"
@@ -97,86 +85,79 @@ VS Code 会提供关于该错误的更多信息。
     height="800px"
 />
 
-代码运行时，错误信息也可能出现在终端中。
-这条信息称为 **stacktrace（堆栈跟踪）**。
-堆栈跟踪会追踪或标出程序中发生错误的位置。
+<Aside type="note" title="Yellow Lines（黄线）">
+    代码下方的黄线是 <strong>warning（警告）</strong>，不是错误。代码仍然可以构建，但警告通常指向一个真实的问题，例如你创建了一个变量却从未使用。
+</Aside>
 
-有时错误过于隐蔽，编译器无法立刻发现，看起来像是另一部分代码导致了错误。
-因此，在尝试修复之前，要仔细阅读堆栈跟踪，先理解它在说明什么。
+构建代码时，同样的错误信息也会出现在终端中。
+真正的错误不一定就在编译器指出的那一行。
+某一行缺少分号或花括号，可能会让后面几行才报错，所以在动手修改之前，也要看一看错误附近的几行。
 
-## Runtime Error（运行时错误）
+## Runtime Errors（运行时错误）
 
-代码看起来可能没有 bug，但运行时却出现错误。
-发生这种情况时，就是运行时错误。
-运行时错误只有在程序运行时才能发现。
-一种常见的运行时错误是除以零。
+编译器抓不住所有错误。
+有些代码符合 Java 的全部规则，问题只有在代码运行时才会出现。
+这些称为 <strong>runtime errors（运行时错误）</strong>。
+一种常见的运行时错误是除以零：
 
-来看一个示例。
 {/* rli:ignore */}
 
 ```java
-    int answer = 10 / 0;
-    System.out.println(answer);
+int answer = 10 / 0;
+System.out.println(answer);
 ```
 
-这个示例看起来应该能够运行。
-不过，如果运行这段代码，就会因为除以零而产生运行时错误。
-终端会显示类似这样的错误：`Exception in thread "main" java.lang.ArithmeticException: / by zero at main.main(main.java:5)`。
-阅读错误信息就能看出，这是一个除以 0 的错误。
-它发生在 `int answer = 10/0;`，因为这里在除以零。
-一种修复方法是把 10 和 0 对调。
+这段代码能够通过编译，但运行时会崩溃，并出现类似这样的错误：
 
-<Aside type="tip" title="Tip（提示）">
-    堆栈跟踪会告诉你错误所在的行。
-    例如，`Exception in thread "main" java.lang.ArithmeticException: / by zero at main.main(main.java:5)`
-    中有 `(main.java:5)`。
-    这表示错误位于 `main.java` 的第 5 行。
+{/* rli:ignore */}
 
-</Aside>
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+    at Main.main(Main.java:5)
+```
 
-## Logic Error（逻辑错误）
+这条信息称为 <strong>stack trace（堆栈跟踪）</strong>，因为它会把错误追溯到程序中发生问题的位置。
+第一行说明出了什么问题。
+`ArithmeticException` 是数学错误，`/ by zero` 说明具体是哪一种。
+第二行说明发生在哪里，`(Main.java:5)` 表示 `Main.java` 的第 5 行。
+要修复它，就修改代码，让它永远不会除以零。
 
-有时代码能够运行，也没有报错，但没有给出期望的输出。
-计算机不知道我们期望它做什么。
-它只知道我们告诉它的内容。
-如果给出的指令是错的，输出也会是错的。
+## Logic Errors（逻辑错误）
 
-来看一个简单示例。
+有时代码能够通过编译，运行时也不会崩溃，但没有做出你想要的结果。
+这是 <strong>logic error（逻辑错误）</strong>。
+计算机不知道你的本意，它只按代码所说的去做，即使那是错的。
+
+下面这段代码本应计算一个宽为 2、高为 5 的矩形面积。
+不运行它的话，你能找出错误吗？
 
 ```java #logicError1
 
 ```
 
-这个示例计算矩形的面积。
-宽度是 2，高度是 5。
-如果运行这段代码，它会输出 `Area of the rectangle is 7`，但这是错的。
-面积应该是 10。
-代码运行时没有错误，为什么计算错了？
-计算矩形面积时，公式是宽度乘以高度。
-代码中并没有把宽度和高度相乘，而是把两者相加。
-因此，把加号改成乘号就能解决问题，输出应变为 `Area of the rectangle is 10`。
-这是一个简单的逻辑问题示例。
-代码运行时没有错误，但指令是错的。
+<Aside type="tip" title="Answer（答案）" collapse>
+    矩形面积是宽度乘以高度，但代码把它们相加了。它会打印 `Area of the rectangle is 7`，而不是 `10`。把 `+` 改成 `*` 就能修好。
+</Aside>
 
-软件中的 bug 往往不像这个示例这样容易发现。
-一定要花时间阅读代码，确认预期行为与代码所表达的内容一致。
-添加 `System.out.println();` 也有助于拆解程序在不同位置做了什么。
+逻辑错误没有错误信息，所以必须自己找。
+通读代码，检查它实际写的内容是否和你的本意一致。
+在程序的不同位置用 `System.out.println()` 打印数值也会有帮助。
+第一个打印出你没预料到的值的位置，大致就是出错的地方。
+真实的逻辑错误通常比这个例子更难发现。
 
-## 实用建议
+## 避免和修复错误的建议
 
-代码中总会出现错误，但有一些做法可以帮助减少错误出现的频率。
+你不可能写出完全没有错误的代码，但可以让错误更少出现，也更容易找到：
 
-- 使用与含义相符的变量名。
-- 把复杂的逻辑块拆成更小、更简单的部分。
+- 使用能说明变量保存内容的变量名。
+- 把复杂的代码拆成更小、更简单的部分。
 - 让代码易于阅读。
-  可读性很重要。
-- 代码由一个个构建块组成。
-  先测试较小的构建块，确保较大构建块有坚实的基础。
+- 每写完一小段代码就测试一次。
+  不要等全部写完再一次测试。
 
-出现错误时，要仔细阅读错误信息。
-如果卡住了，可以使用在线资源！
-查找错误信息可以帮助你找到正确的修复方向。
+遇到错误时，要仔细阅读错误信息。
+如果卡住了，就在网上搜索这条错误信息。
+很可能已经有人遇到过同样的问题。
 
-- VS Code 有许多无障碍功能，对调试和编写代码会有帮助。
-  更多信息可以在网上找到。
-- 对一些人来说，把 VS Code 换成更易读的字体（例如 Comic Sans）有助于阅读代码，从而发现或避免错误。
+VS Code 也有一些无障碍功能，可以让代码更容易阅读和调试。
+例如，有些人觉得换一种字体（比如 Comic Sans）更容易发现错误。

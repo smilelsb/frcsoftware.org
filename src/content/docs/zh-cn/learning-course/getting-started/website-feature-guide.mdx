@@ -20,12 +20,13 @@ import { TabItem, Tabs } from '@astrojs/starlight/components';
 - 部分信息隐藏在下拉框中。
   请尽量查看其中的大部分内容！
 
-<details class="accordion">
-    <summary>提示</summary>
-    <div class="content">
-        <p>你可以在这里找到提示或问题的答案。</p>
-    </div>
-</details>
+<Aside type="hint" title="Hint（提示）">
+    问题的提示隐藏在这样的 Hint（提示）下拉框中。
+</Aside>
+
+<Aside type="answer" title="Answer（答案）">
+    问题的答案隐藏在这样的 Answer（答案）下拉框中。
+</Aside>
 
 FRCSoftware 主要介绍针对不同电机编写代码的两种方式。
 在后续阶段中，将使用标签页来区分这些差异。
